@@ -1,0 +1,62 @@
+zabbix_export:
+  version: '7.0'
+  template_groups:
+    - uuid: 0d6f80c4b60a444a81340289ea011b5b
+      name: Templates
+  templates:
+    - uuid: d5654c9d18ce45f5a85ca07d1385884c
+      template: 'HW sensors by Zabbix agent'
+      name: 'HW sensors by Zabbix agent'
+      description: 'Hardware sensors (hwmon) monitoring via Zabbix agent'
+      groups:
+        - name: Templates
+      discovery_rules:
+        - uuid: c67589a033dd4264878abf4160b07a34
+          name: 'HW sensors discovery'
+          key: hwmon.discovery
+          delay: 1h
+          item_prototypes:
+            - uuid: a2e579dab4ab4c8197c7935e64456050
+              name: 'Sensor {#FEATURE} on {#CHIP}'
+              key: 'hwmon.value[{#CHIP},{#FEATURE}]'
+              delay: 1m
+              history: 365d
+              value_type: FLOAT
+              units: '{#UNIT}'
+              tags:
+                - tag: Application
+                  value: 'HW.{#TYPE}'
+              trigger_prototypes:
+                # all
+                - uuid: 801721a613f7497db8101501a87a25be
+                  expression: '{#CHIP}<>"coretemp-isa-0000" and {#TYPE}="temp" and last(/HW sensors by Zabbix agent/hwmon.value[{#CHIP},{#FEATURE}])>={$HW.TEMP.MAX}'
+                  name: 'High temperature on {#CHIP},{#FEATURE}'
+                  priority: HIGH
+                # fanless CPU PCs
+                - uuid: 7ba81b55892a486ab5ef0c0be4c5556a
+                  expression: '{#CHIP} ="coretemp-isa-0000" and {#TYPE}="temp" and last(/HW sensors by Zabbix agent/hwmon.value[{#CHIP},{#FEATURE}])>={$HW.TEMP.MAX.CORETEMP}'
+                  name: 'High temperature on {#CHIP},{#FEATURE}'
+                  priority: HIGH
+                - uuid: 4e75f4f316774b3dbedb15407a26d07e
+                  expression: '{#TYPE}="fan" and last(/HW sensors by Zabbix agent/hwmon.value[{#CHIP},{#FEATURE}])=0'
+                  name: 'Fan stopped on {#CHIP},{#FEATURE}'
+                  priority: DISASTER
+                - uuid: f812df3eaadc4eaa8a31202546e14eee
+                  expression: 'nodata(/HW sensors by Zabbix agent/hwmon.value[{#CHIP},{#FEATURE}],10m)=1'
+                  name: 'No data from {#CHIP},{#FEATURE}'
+                  priority: WARNING
+          graph_prototypes:
+            - uuid: 0b9f78ea3a5c4bf789e7a0c74677dee7
+              name: 'Sensor {#CHIP},{#FEATURE}'
+              graph_items:
+                - color: 00CC00
+                  item:
+                    host: 'HW sensors by Zabbix agent'
+                    key: 'hwmon.value[{#CHIP},{#FEATURE}]'
+      macros:
+        - macro: '{$HW.TEMP.MAX}'
+          description: 'High temperature threshold for all chips except coretemp-isa-0000 (°C)'
+          value: '70'
+        - macro: '{$HW.TEMP.MAX.CORETEMP}'
+          description: 'High temperature threshold for coretemp-isa-0000 (fanless CPU PCs) (°C)'
+          value: '90'
