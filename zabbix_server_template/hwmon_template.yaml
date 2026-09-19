@@ -28,7 +28,7 @@ zabbix_export:
                   value: 'HW.{#TYPE}'
               trigger_prototypes:
                 - uuid: 801721a613f7497db8101501a87a25be
-                  expression: '{#TYPE}="temp" and last(/HW sensors by Zabbix agent/hwmon.value[{#CHIP},{#FEATURE}])>={$HW.TEMP.MAX:"{#CHIP}"}'
+                  expression: '{#TYPE}="temp" and last(/HW sensors by Zabbix agent/hwmon.value[{#CHIP},{#FEATURE}])>={$HW.TEMP.MAX:"{#CHIP},{#FEATURE}"}'
                   name: 'High temperature on {#CHIP},{#FEATURE}'
                   priority: HIGH
                 - uuid: 4e75f4f316774b3dbedb15407a26d07e
@@ -51,6 +51,6 @@ zabbix_export:
         - macro: '{$HW.TEMP.MAX}'
           description: 'Default high temperature (°C) threshold, used when no context-specific macro matches'
           value: '70'
-        - macro: '{$HW.TEMP.MAX:regex:"^coretemp-isa-|^k10temp-"}'
-          description: 'High temperature (°C) threshold for CPU sensors: Intel coretemp, AMD k10temp'
+        - macro: '{$HW.TEMP.MAX:regex:"^coretemp-isa-|^k10temp-|^nct6797-isa-0a20,(temp7|temp13)$"}'
+          description: 'High temperature (°C) threshold for CPU sensors: Intel coretemp, AMD k10temp, nct6797 SMBUSMASTER 0 (temp7) and TSI0_TEMP (temp13)'
           value: '90'
