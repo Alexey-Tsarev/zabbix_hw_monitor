@@ -27,14 +27,8 @@ zabbix_export:
                 - tag: Application
                   value: 'HW.{#TYPE}'
               trigger_prototypes:
-                # all
                 - uuid: 801721a613f7497db8101501a87a25be
-                  expression: '{#CHIP}<>"coretemp-isa-0000" and {#TYPE}="temp" and last(/HW sensors by Zabbix agent/hwmon.value[{#CHIP},{#FEATURE}])>={$HW.TEMP.MAX}'
-                  name: 'High temperature on {#CHIP},{#FEATURE}'
-                  priority: HIGH
-                # fanless CPU PCs
-                - uuid: 7ba81b55892a486ab5ef0c0be4c5556a
-                  expression: '{#CHIP} ="coretemp-isa-0000" and {#TYPE}="temp" and last(/HW sensors by Zabbix agent/hwmon.value[{#CHIP},{#FEATURE}])>={$HW.TEMP.MAX.CORETEMP}'
+                  expression: '{#TYPE}="temp" and last(/HW sensors by Zabbix agent/hwmon.value[{#CHIP},{#FEATURE}])>={$HW.TEMP.MAX:"{#CHIP}"}'
                   name: 'High temperature on {#CHIP},{#FEATURE}'
                   priority: HIGH
                 - uuid: 4e75f4f316774b3dbedb15407a26d07e
@@ -55,8 +49,8 @@ zabbix_export:
                     key: 'hwmon.value[{#CHIP},{#FEATURE}]'
       macros:
         - macro: '{$HW.TEMP.MAX}'
-          description: 'High temperature threshold for all chips except coretemp-isa-0000 (°C)'
+          description: 'Default high temperature (°C) threshold, used when no context-specific macro matches'
           value: '70'
-        - macro: '{$HW.TEMP.MAX.CORETEMP}'
-          description: 'High temperature threshold for coretemp-isa-0000 (fanless CPU PCs) (°C)'
+        - macro: '{$HW.TEMP.MAX:regex:"^coretemp-isa-|^k10temp-"}'
+          description: 'High temperature (°C) threshold for CPU sensors: Intel coretemp, AMD k10temp'
           value: '90'
