@@ -31,8 +31,10 @@ zabbix_export:
                   expression: '{#TYPE}="temp" and last(/HW sensors by Zabbix agent/hwmon.value[{#CHIP},{#FEATURE}])>={$HW.TEMP.MAX:"{#CHIP},{#FEATURE}"}'
                   name: 'High temperature on {#CHIP},{#FEATURE}'
                   priority: HIGH
+                # min(5m)=0: sustained zero (not a single glitch);
+                # max(1h)>0: fan was spinning before
                 - uuid: 4e75f4f316774b3dbedb15407a26d07e
-                  expression: '{#TYPE}="fan" and last(/HW sensors by Zabbix agent/hwmon.value[{#CHIP},{#FEATURE}])=0'
+                  expression: '{#TYPE}="fan" and min(/HW sensors by Zabbix agent/hwmon.value[{#CHIP},{#FEATURE}],5m)=0 and max(/HW sensors by Zabbix agent/hwmon.value[{#CHIP},{#FEATURE}],1h)>0'
                   name: 'Fan stopped on {#CHIP},{#FEATURE}'
                   priority: DISASTER
                 - uuid: f812df3eaadc4eaa8a31202546e14eee

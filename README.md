@@ -20,10 +20,10 @@ systemctl restart zabbix-agent2
 2. Link the template `HW sensors by Zabbix agent` to the hosts.
 
 ## Macros
-| Macro                                              | Default | Description                                                   |
-|----------------------------------------------------|---------|---------------------------------------------------------------|
-| `{$HW.TEMP.MAX}`                                   | 70      | Default high temperature (°C)                                 |
-| `{$HW.TEMP.MAX:regex:"^coretemp-isa-\|^k10temp-"}` | 90      | High temperature for CPU sensors: Intel coretemp, AMD k10temp |
+| Macro                                                                                  | Default | Description                                                                                                         |
+|----------------------------------------------------------------------------------------|---------|---------------------------------------------------------------------------------------------------------------------|
+| `{$HW.TEMP.MAX}`                                                                       | 70      | Default high temperature (°C)                                                                                       |
+| `{$HW.TEMP.MAX:regex:"^coretemp-isa-\|^k10temp-\|^nct6797-isa-0a20,(temp7\|temp13)$"}` | 90      | High temperature for CPU sensors: Intel coretemp, AMD k10temp, nct6797 SMBUSMASTER 0 (temp7) and TSI0_TEMP (temp13) |
 
 ---
 Good luck!  
