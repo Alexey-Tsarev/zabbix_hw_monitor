@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SCRIPT_DIR="$(realpath "$(dirname "$0")")"
+SCRIPT_DIR="$(readlink -f "$(dirname "$0")")"
 
 PASS=0
 FAIL=0

@@ -17,7 +17,7 @@ zabbix_export:
           delay: 1h
           item_prototypes:
             - uuid: a2e579dab4ab4c8197c7935e64456050
-              name: 'Sensor {#FEATURE} on {#CHIP}'
+              name: 'Sensor on {#CHIP},{#FEATURE}'
               key: 'hwmon.value[{#CHIP},{#FEATURE}]'
               delay: 1m
               history: 365d

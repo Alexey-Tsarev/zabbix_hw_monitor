@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SCRIPT_DIR="$(realpath "$(dirname "$0")")"
+SCRIPT_DIR="$(readlink -f "$(dirname "$0")")"
 . "${SCRIPT_DIR}/hwmon_lib.sh"
 
 SYSFS="${HW_SENSORS_SYSFS:-/sys/class/hwmon}"
