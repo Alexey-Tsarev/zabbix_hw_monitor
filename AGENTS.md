@@ -10,8 +10,7 @@ We are interested in: temperatures, fans, volts.
 - Key: `hwmon.value[{#CHIP},{#FEATURE}]` (not built-in `sensor[]`)
 - NVMe unsupported by built-in plugin — `hwmon_value.sh` falls back to sysfs
 - Triggers:
-  - temp >= `{$HW.TEMP.MAX}` (70°C)
-  - coretemp >= `{$HW.TEMP.MAX.CORETEMP}` (90°C)
+  - temp >= `{$HW.TEMP.MAX:"{#CHIP}"}` (70°C default, 90°C for `^coretemp-isa-|^k10temp-`)
   - fan stopped
   - nodata 10m
 
